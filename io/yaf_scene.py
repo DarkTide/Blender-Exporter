@@ -120,6 +120,8 @@ def exportRenderSettings(yi, scene):
         yi.paramsSetBool("z_channel", scene.gs_z_channel)
 
     yi.paramsSetBool("drawParams", scene.gs_draw_params)
+    yi.paramsSetBool("transparent_background", scene.transparent_background)
+    
     yi.paramsSetString("customString", scene.gs_custom_string)
 
     if scene.gs_auto_threads:

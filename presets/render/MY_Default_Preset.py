@@ -25,6 +25,14 @@ scene.intg_photons = 500000
 scene.intg_caustic_mix = 100
 scene.intg_caustic_depth = 10
 scene.intg_caustic_radius = 1.0
+
+# SSS settings
+scene.intg_useSSS = False
+scene.intg_sssPhotons = 100000
+scene.intg_sssDepth = 5
+scene.intg_singleScatterSamples = 32
+scene.intg_sssScale = 30.0
+
 scene.intg_use_AO = False
 scene.intg_AO_samples = 32
 scene.intg_AO_distance = 1.0
@@ -35,6 +43,24 @@ scene.intg_cPhotons = 500000
 scene.intg_search = 100
 scene.intg_final_gather = True
 scene.intg_fg_bounces = 3
+
+# Photonmap IC settings
+scene.intg_IC_M_Divs = 10
+scene.intg_IC_Kappa = 1.0
+scene.intg_do_IC = True
+
+# Photonmap GPU settings
+scene.intg_ph_leaf_radius = 0.3
+scene.intg_ph_candidate_multi = 50
+scene.intg_ph_area_multiplier = 6.0
+scene.intg_ph_show_cover = False
+scene.intg_ph_test_rays = False
+scene.intg_ph_benchmark_ray_count = False
+scene.intg_ph_benchmark_min_tile_size = 4
+scene.intg_ph_work_group_size = 32
+scene.intg_fg_OCL = False
+scene.intg_ph_method = 1
+
 scene.intg_fg_samples = 16
 scene.intg_show_map = False
 scene.intg_caustic_method = 'None'

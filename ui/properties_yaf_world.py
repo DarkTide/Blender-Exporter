@@ -17,7 +17,8 @@
 # ##### END GPL LICENSE BLOCK #####
 
 # <pep8 compliant>
-
+#povman 
+#import bpy
 from bpy.types import Panel
 from bl_ui.properties_world import WorldButtonsPanel
 
@@ -71,33 +72,28 @@ class YAFWORLD_PT_world(WorldButtonsPanel, Panel):
             tex = context.scene.world.active_texture
 
             if tex is not None:
-                #
-                layout.template_ID(context.world, "active_texture")
-                #
-                if  tex.yaf_tex_type == "IMAGE":  # it allows to change the used image
-                    #
-                    layout.template_image(tex, "image", tex.image_user, compact=True)
-                    #
-                else:
-                    # TODO: create message about not allow texture type
+                try:
+                    layout.template_ID(context.world, "active_texture")  # new="texture.new")
+                except:
                     pass
+                if  tex.yaf_tex_type == "IMAGE":  # it allows to change the used image
+                    try:
+                        layout.template_image(tex, "image", tex.image_user, compact=True)
+                    except:
+                        pass
             else:
-                #try:
-                layout.template_ID(context.world, "active_texture", new="texture.new")
-                #except:
-                #    pass
-
-            layout.label(text="Background Texture controls")
-            layout.prop(world,"bg_rotation")
-            # this option is used in YafaRay Core. With more or less effect :)
-            layout.prop(world, "bg_exposure")
-            layout.prop(world,"yaf_mapworld_type", text="Mapping Coord")
-            layout.separator()
+                try:
+                    layout.template_ID(context.world, "active_texture", new="texture.new")
+                except:
+                    pass
+            #        
+            layout.prop(world, "bg_rotation")
 
             split = layout.split(percentage=0.33)
+
             col = split.column()
             col.prop(world, "bg_use_ibl")
-
+            
             if world.bg_use_ibl:
                 row = layout.row()
                 row.prop(world, "bg_with_diffuse")
@@ -207,6 +203,12 @@ class YAFWORLD_PT_world(WorldButtonsPanel, Panel):
             col.prop(world, "bg_dsbright")
 
             layout.column().prop(world, "bg_light_samples")
+
+            split = layout.split()
+            col = split.column()
+            col.prop(world, "bg_clamp_rgb")
+            col = split.column()
+            col.prop(world, "bg_gamma_enc")
 
             layout.column().prop(world, "bg_color_space")
 

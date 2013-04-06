@@ -268,21 +268,18 @@ class YAF_TEXTURE_PT_image_sampling(YAF_TextureTypePanel, Panel):
 
     def draw(self, context):
         layout = self.layout
-        idblock = context_tex_datablock(context)
 
         tex = context.texture
         layout.label(text="Image:")
         row = layout.row(align=True)
-        if not isinstance(idblock, World):
-            '''povman: change layout to row for save space
-                and show only options in each context
-            '''
-            row.prop(tex, "yaf_use_alpha", text="Use Alpha")
-            row.prop(tex, "use_calculate_alpha", text="Calculate Alpha")
-            layout.prop(tex, "use_flip_axis", text="Flip X/Y Axis")
-        else:
-            row.prop(tex, "use_interpolation", text="Use image background interpolation")
-            #row.prop(tex, "use_calculate_alpha", text="Calculate Alpha")
+        # povman test: change layout to row for save space
+        #layout.prop(tex, "yaf_use_alpha", text="Use Alpha")
+        #layout.prop(tex, "use_calculate_alpha", text="Calculate Alpha")
+        row.prop(tex, "yaf_use_alpha", text="Use Alpha")
+        row.prop(tex, "use_calculate_alpha", text="Calculate Alpha")
+        # test
+        #layout = self.layout
+        layout.prop(tex, "use_flip_axis", text="Flip X/Y Axis")
 
 
 class YAF_TEXTURE_PT_image_mapping(YAF_TextureTypePanel, Panel):
@@ -461,7 +458,7 @@ class YAF_TEXTURE_PT_mapping(YAF_TextureSlotPanel, Panel):
 
         tex = context.texture_slot
         # textype = context.texture
-
+        
         if not isinstance(idblock, Brush):
             if isinstance(idblock, World):
                 split = layout.split(percentage=0.3)
@@ -476,7 +473,7 @@ class YAF_TEXTURE_PT_mapping(YAF_TextureSlotPanel, Panel):
                 col.label(text="Coordinates:")
                 col = split.column()
                 col.prop(tex, "texture_coords", text="")
-
+                
 
             if tex.texture_coords == 'UV':
                 pass
@@ -525,12 +522,12 @@ class YAF_TEXTURE_PT_mapping(YAF_TextureSlotPanel, Panel):
                 row.prop(tex, "mapping_x", text="")
                 row.prop(tex, "mapping_y", text="")
                 row.prop(tex, "mapping_z", text="")
-
+        
         # tes povman
-        if not isinstance(idblock, World):
-            row = layout.row()
-            row.column().prop(tex, "offset")
-            row.column().prop(tex, "scale")
+        #if not isinstance(idblock, World):
+        row = layout.row()
+        row.column().prop(tex, "offset")
+        row.column().prop(tex, "scale")
 
 
 class YAF_TEXTURE_PT_influence(YAF_TextureSlotPanel, Panel):

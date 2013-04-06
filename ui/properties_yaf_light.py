@@ -24,7 +24,7 @@ from bl_ui.properties_data_lamp import DataButtonsPanel
 # Inherit Lamp data block
 from bl_ui.properties_data_lamp import DATA_PT_context_lamp
 DATA_PT_context_lamp.COMPAT_ENGINES.add('YAFA_RENDER')
-del DATA_PT_context_lamp    
+del DATA_PT_context_lamp
 
 class YAF_PT_preview(Panel):
     bl_space_type = 'PROPERTIES'
@@ -103,7 +103,7 @@ class YAF_PT_lamp(DataButtonsPanel, Panel):
             if lamp.ies_soft_shadows:
                 layout.box().prop(lamp, "yaf_samples")
 
-# povman test
+# povman: add size controls for area light
 class YAF_PT_area(DataButtonsPanel, Panel):
     bl_label = "Area Shape"
     COMPAT_ENGINES = {'YAFA_RENDER'}

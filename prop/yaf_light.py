@@ -82,7 +82,7 @@ def register():
         default=False)
 
     Lamp.create_geometry = BoolProperty(
-        name="Create and show geometry",
+        name="Create geometry",
         description="Creates a visible geometry in the dimensions of the light during the render",
         default=False)
 

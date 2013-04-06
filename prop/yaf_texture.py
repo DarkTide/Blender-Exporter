@@ -61,6 +61,7 @@ def register():
         name="Use alpha image info",
         description="Use alpha values for image mapping",
         default=False)
+    
 
 
 def unregister():

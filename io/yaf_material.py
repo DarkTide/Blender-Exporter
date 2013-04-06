@@ -217,6 +217,7 @@ class yafMaterial:
         else:
             yi.paramsSetString("type", "glass")
 
+        yi.paramsSetInt("glass_internal_reflect_depth", mat.glass_internal_reflect_depth)
         yi.paramsSetFloat("IOR", mat.IOR_refraction)  # added IOR for refraction
         filt_col = mat.filter_color
         mir_col = mat.glass_mir_col
@@ -336,7 +337,89 @@ class yafMaterial:
             yi.paramsSetFloat("sigma", mat.sigma)
 
         return yi.createMaterial(self.namehash(mat))
+    #-->
+    def writeTranslucentShader(self, mat):
+        yi = self.yi
+        yi.paramsClearAll()
+        yi.paramsSetString("type", "translucent")
+        yi.paramsSetFloat("IOR", mat.sssIOR)
+        
+        color = mat.sssColor
+        glossyColor=mat.glossy_color;
+        specColor = mat.sssSpecularColor
+        sA = mat.sssSigmaA
+        sS = mat.sssSigmaS
+        sSFactor = mat.sssSigmaS_factor
+        mD = mat.diffuse_reflect
+        mG = mat.glossy_reflect
+        mT = mat.sss_transmit
+        exp = mat.exponent
+        
+        yi.paramsSetColor("color", color[0], color[1], color[2])
+        yi.paramsSetColor("glossy_color", glossyColor[0], glossyColor[1], glossyColor[2])
+        yi.paramsSetColor("specular_color", specColor[0], specColor[1], specColor[2])
+        yi.paramsSetColor("sigmaA", sA[0], sA[1], sA[2])
+        yi.paramsSetColor("sigmaS", sS[0], sS[1], sS[2])
+        yi.paramsSetFloat("sigmaS_factor",sSFactor)
+        yi.paramsSetFloat("diffuse_reflect",mD)
+        yi.paramsSetFloat("glossy_reflect",mG)
+        yi.paramsSetFloat("sss_transmit",mT)
+        yi.paramsSetFloat("exponent",exp)
+        
+        diffRoot = ''
+        glossRoot = ''
+        glRefRoot = ''
+        transpRoot = ''
+        translRoot = ''
+        bumpRoot = ''
+        
+        i=0
+        used_mtextures = self.getUsedTextures(mat)
 
+        for mtex in used_mtextures:
+            used = False
+            mappername = "map%x" %i
+            
+            lname = "diff_layer%x" % i
+            if self.writeTexLayer(lname, mappername, diffRoot, mtex, mtex.use_map_color_diffuse, color, mtex.diffuse_color_factor):
+                used = True
+                diffRoot = lname
+            lname = "gloss_layer%x" % i
+            if self.writeTexLayer(lname, mappername, glossRoot, mtex, mtex.use_map_color_spec, glossyColor, mtex.specular_color_factor):
+                used = True
+                glossRoot = lname
+            lname = "glossref_layer%x" % i
+            if self.writeTexLayer(lname, mappername, glRefRoot, mtex, mtex.use_map_specular, [mG], mtex.specular_color_factor):
+                used = True
+                glRefRoot = lname
+            lname = "transp_layer%x" % i
+            if self.writeTexLayer(lname, mappername, transpRoot, mtex, mtex.use_map_alpha, sA, mtex.alpha_factor):
+                used = True
+                transpRoot = lname
+            lname = "translu_layer%x" % i
+            if self.writeTexLayer(lname, mappername, translRoot, mtex, mtex.use_map_translucency, sS, mtex.translucency_factor):
+                used = True
+                translRoot = lname
+            lname = "bump_layer%x" % i
+            if self.writeTexLayer(lname, mappername, bumpRoot, mtex, mtex.use_map_normal, [0], mtex.normal_factor):
+                used = True
+                bumpRoot = lname
+            if used:
+                self.writeMappingNode(mappername, mtex.texture.name, mtex)
+            i +=1
+        
+        yi.paramsEndList()
+        if len(diffRoot) > 0:    yi.paramsSetString("diffuse_shader", diffRoot)
+        if len(glossRoot) > 0:    yi.paramsSetString("glossy_shader", glossRoot)
+        if len(glRefRoot) > 0:    yi.paramsSetString("glossy_reflect_shader", glRefRoot)
+        if len(bumpRoot) > 0:    yi.paramsSetString("bump_shader", bumpRoot)
+        if len(transpRoot) > 0:    yi.paramsSetString("sigmaA_shader", transpRoot)
+        if len(translRoot) > 0:    yi.paramsSetString("sigmaS_shader", translRoot)
+
+        return yi.createMaterial(self.namehash(mat))
+    #-------->
+        
+    
     def writeShinyDiffuseShader(self, mat):
         yi = self.yi
         yi.paramsClearAll()
@@ -507,6 +590,10 @@ class yafMaterial:
             ymat = self.writeShinyDiffuseShader(mat)
         elif mat.mat_type == "blend":
             ymat = self.writeBlendShader(mat)
+        #
+        elif mat.mat_type == "translucent":
+            ymat = self.writeTranslucentShader(mat)
+        #
         else:
             ymat = self.writeNullMat(mat)
 

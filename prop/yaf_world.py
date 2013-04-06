@@ -56,8 +56,8 @@ def register():
     World.yaf_mapworld_type = EnumProperty(
         name="Mapping Type",
         items=(
-            ('SPHERE', "Spherical", "Spherical mapping"),
-            ('ANGMAP', "Angular", "Angular mapping")
+            ('SPHERE', "Sphere", ""),
+            ('ANGMAP', "AngMap", "")
         ),
         default='SPHERE')
     ########## end test ########################

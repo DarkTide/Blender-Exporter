@@ -20,6 +20,7 @@
 
 import bpy
 from bpy.props import (FloatProperty,
+												IntProperty,
                        BoolProperty,
                        EnumProperty,
                        FloatVectorProperty,
@@ -51,9 +52,15 @@ def register():
             ('coated_glossy', "Coated Glossy", "Assign a material type"),
             ('glass', "Glass", "Assign a material type"),
             ('rough_glass', "Rough Glass", "Assign a material type"),
-            ('blend', "Blend", "Assign a material type")
+            ('blend', "Blend", "Assign a material type"),
+            ('translucent', "Translucent (SSS)", "Assign a material type")
         ),
         default='shinydiffusemat')
+
+    Material.glass_internal_reflect_depth = IntProperty(
+        name="Max internal reflection bounces",
+        description="Max. number of bounces for internal reflection calculation. Recommended=3 for glass balls",
+        min=0, max=32, default=2)
 
     Material.diffuse_reflect = FloatProperty(
         name="Reflection strength",
@@ -272,9 +279,60 @@ def register():
         description="Second blend material",
         items=items_mat2)
 
+    #
+    Material.sssColor = FloatVectorProperty(
+        name="Diffuse color",
+        description="Diffuse color",
+        subtype='COLOR',
+        min=0.0, max=1.0,
+        default=(1.0, 1.0, 1.0))
+        
+    Material.sssSpecularColor = FloatVectorProperty(
+        name="Specular Color",
+        description="Specular Color",
+        subtype='COLOR',
+        min=0.0, max=1.0,
+        default=(1.0, 1.0, 1.0))
+
+    Material.sssSigmaA = FloatVectorProperty(
+        name="Absorption Color",
+        description="Absorption Color",
+        subtype='COLOR',
+        min=0.0, max=1.0,
+        default=(0.0, 0.0, 0.0))
+
+    Material.sssSigmaS = FloatVectorProperty(
+        name="Scatter color",
+        description="Scatter color",
+        subtype='COLOR',
+        min=0.0, max=1.0,
+        default=(1.0, 1.0, 1.0))
+
+    Material.sssSigmaS_factor = FloatProperty(
+        name="SigmaS factor",
+        description="Index of refraction for SSS",
+        min=1.0, max=30.0,
+        step=0.01, precision=3,
+        default=1.0)
+
+    Material.sss_transmit = FloatProperty(
+        name="Transluency",
+        description="Transluency",
+        min=0.0, max=1.0,
+        step=0.01, precision=3,
+        default=1.0)
+
+    Material.sssIOR = FloatProperty(
+        name="IOR",
+        description="Index of refraction for SSS",
+        min=1.0, max=30.0,
+        step=1, precision=3,
+        soft_min=1.0, soft_max=30.0,
+        default=1.300)
 
 def unregister():
     del Material.mat_type
+    del Material.glass_internal_reflect_depth
     del Material.diffuse_reflect
     del Material.specular_reflect
     del Material.transparency
@@ -305,3 +363,11 @@ def unregister():
     del Material.coated
     del Material.material1
     del Material.material2
+    #
+    del Material.sssColor
+    del Material.sssSpecularColor
+    del Material.sssSigmaA
+    del Material.sssSigmaS
+    del Material.sssSigmaS_factor
+    del Material.sss_transmit
+    del Material.sssIOR

@@ -268,6 +268,10 @@ class YAF_PT_glass_real(MaterialTypePanel, Panel):
         layout.label(text="Refraction and Reflections:")
         split = layout.split()
         col = split.column()
+        col.prop(yaf_mat, "glass_internal_reflect_depth")
+
+        split = layout.split()
+        col = split.column()
         col.prop(yaf_mat, "IOR_refraction")
 
         col = split.column()
@@ -330,7 +334,30 @@ class YAF_PT_blend_(MaterialTypePanel, Panel):
         col = split.column()
         col.label(text="Material two:")
         col.prop(yaf_mat, "material2", text="")
+        
+#
+class YAF_PT_translucent(MaterialTypePanel, Panel):
+    bl_label = "Translucent (SSS) settings"
+    material_type = 'translucent'
 
+    def draw(self, context):
+        layout = self.layout
+        yaf_mat = active_node_mat(context.material)
+
+        split = layout.split()
+        col = split.column()
+        col.prop(yaf_mat, "sssColor")
+        col.prop(yaf_mat, "diffuse_reflect")
+        col.prop(yaf_mat, "sssSpecularColor")
+        col.prop(yaf_mat, "sssSigmaS")
+        col.prop(yaf_mat, "sssSigmaS_factor")
+        col = split.column()
+        col.prop(yaf_mat, "glossy_color")
+        col.prop(yaf_mat, "glossy_reflect")
+        col.prop(yaf_mat, "sssSigmaA")
+        col.prop(yaf_mat, "sss_transmit")
+        col.prop(yaf_mat, "exponent")
+        col.prop(yaf_mat, "sssIOR")
 
 
 if __name__ == "__main__":  # only for live edit.

@@ -69,30 +69,28 @@ class yafWorld:
                     yi.paramsSetString("filename", image_file)
 
                     # exposure_adjust not restricted to integer range anymore
-                    yi.paramsSetFloat("exposure_adjust", world.exposure) #bg_exposure)
+                    yi.paramsSetFloat("exposure_adjust", world.bg_exposure)
 
-                    interpolate = 'none'
                     if worldTex.use_interpolation == True:
-                        interpolate = 'bilinear'
-                    #
-                    yi.paramsSetString("interpolate", interpolate)
+                        yi.paramsSetString("interpolate", "bilinear")
+                    else:
+                        yi.paramsSetString("interpolate", "none")
                     
                     yi.createTexture("world_texture")
 
                     # Export the actual background
                     #texco = world.texture_slots[world.active_texture_index].texture_coords
-                    textcoord = world.yaf_mapworld_type
+                    texco = world.yaf_mapworld_type
                     yi.paramsClearAll()
-                    #
-                    mappingType = {'ANGMAP': 'angular',
-                                   'SPHERE': 'sphere'}                    
-                    texco = mappingType.get(textcoord, "angular")
-                    yi.paramsSetString("mapping", texco)
-                    
-                    # now, this msg is not need , but....
-                    if textcoord not in {'ANGMAP', 'SPHERE'}:
-                        yi.printWarning("World texture mapping neither Sphere or AngMap, set it to AngMap now by default!")
-                        
+
+                    if texco == 'ANGMAP':
+                        yi.paramsSetString("mapping", "probe")
+                    elif texco == 'SPHERE':
+                        yi.paramsSetString("mapping", "sphere")
+                    else:
+                        yi.printWarning("World texture mapping neither Sphere or AngMap, set it to Sphere now by default!")
+                        yi.paramsSetString("mapping", "sphere")
+
                     yi.paramsSetString("type", "textureback")
                     yi.paramsSetString("texture", "world_texture")
                     yi.paramsSetBool("ibl", useIBL)
